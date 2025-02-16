@@ -1,6 +1,5 @@
 import React, {
   createContext,
-  use,
   useContext,
   useEffect,
   useState,
@@ -11,18 +10,18 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUSer] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
   useEffect(() => {
     // check if user is logged in
     const userId = localStorage.getItem("userId");
     if (userId) {
-      setCurrentUSer(userId);
+      setCurrentUser(userId);
     }
   }, []);
 
   const value = {
     currentUser,
-    setCurrentUSer,
+    setCurrentUser,
   };
   return <AuthContext.Provider value={value} >{children}</AuthContext.Provider>
 };
