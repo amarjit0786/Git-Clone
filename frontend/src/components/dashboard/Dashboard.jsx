@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./dashboard.css";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 
 export default function Dashboard() {
   const [repositories, setRepositories] = useState([]);
@@ -8,8 +10,21 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
+  const [favoriteRepos, setFavoriteRepos] = useState({});
+  const [userName, setUserName] = useState("");
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
+
+    const userDetails = async () => {
+      const response = await fetch(
+        `http://localhost:3000/userProfile/${userId}`
+      );
+
+      const userData = await response.json();
+      // console.log(userData.username);
+      setUserName(userData.username);
+    };
 
     const fetchRepositories = async () => {
       try {
@@ -37,6 +52,7 @@ export default function Dashboard() {
 
     fetchRepositories();
     fetchSuggestedRepositories();
+    userDetails();
   }, []);
 
   useEffect(() => {
@@ -51,6 +67,37 @@ export default function Dashboard() {
     }
   }, [searchQuery, repositories]);
 
+  const toggleFavorite = async (repoId) => {
+    try {
+      const userId = localStorage.getItem("userId");
+      const response = await fetch(
+        `http://localhost:3000/repo/star/${repoId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+
+      setFavoriteRepos((prevFavorites) => {
+        let newFavorites = { ...prevFavorites };
+        if (newFavorites[repoId]) {
+          newFavorites[repoId] = false;
+        } else {
+          newFavorites[repoId] = true;
+        }
+        return newFavorites;
+      });
+    } catch (error) {
+      console.error("Error while toggling favorite", error);
+    }
+  };
+
   return (
     <section id="dashboard">
       <aside>
@@ -59,14 +106,32 @@ export default function Dashboard() {
         {suggestedRepositories.map((repo) => {
           return (
             <div key={repo._id}>
-              <h4>{repo.name}</h4>
+              <h4
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                {repo.name}
+                <span onClick={() => toggleFavorite(repo._id)}>
+                  {favoriteRepos[repo._id] ? (
+                    <FavoriteIcon color="error" />
+                  ) : (
+                    <FavoriteBorderIcon />
+                  )}
+                </span>
+              </h4>
+              <hr />
               <p>{repo.description}</p>
             </div>
           );
         })}
       </aside>
       <main>
-        <h2>Your Repositories</h2>
+        <h3>
+          <u> {userName}</u> Repositories
+        </h3>
         <div id="search">
           <input
             type="text"
@@ -79,6 +144,8 @@ export default function Dashboard() {
           return (
             <div key={repo._id}>
               <h4>{repo.name}</h4>
+              <hr />
+
               <h4>{repo.description}</h4>
             </div>
           );

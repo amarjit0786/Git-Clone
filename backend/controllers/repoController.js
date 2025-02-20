@@ -182,6 +182,39 @@ async function deleteRepositoryById(req, res) {
   }
 }
 
+async function toggleStarRepository (req, res) {
+  try {
+    const { repoId } = req.params;
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const repo = await Repository.findById(repoId);
+    if (!repo) {
+      return res.status(404).json({ message: "Repository not found" });
+    }
+
+    const alreadyStarred = user.starRepos.includes(repoId);
+
+    if (alreadyStarred) {
+      // Agar already starred hai, to remove karenge
+      user.starRepos = user.starRepos.filter(id => id.toString() !== repoId);
+    } else {
+      // Nahi hai to add karenge
+      user.starRepos.push(repoId);
+    }
+
+    await user.save();
+    res.json({ message: alreadyStarred ? "Repository unstarred" : "Repository starred", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   createRepository,
   getAllRepositories,
@@ -191,4 +224,5 @@ export {
   updateRepositoryById,
   toggleRepositoryVisibilityById,
   deleteRepositoryById,
+  toggleStarRepository,
 };
