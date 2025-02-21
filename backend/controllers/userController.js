@@ -43,7 +43,7 @@ async function signUp(req, res) {
       starRepos: [],
     });
 
-    res.status(201).json({ token: generateToken(insertedId) });
+    res.status(201).json({ token: generateToken(insertedId), userId: insertedId });
   } catch (error) {
     handleErrors(res, error);
   }

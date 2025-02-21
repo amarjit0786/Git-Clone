@@ -4,7 +4,7 @@ import Issue from "../models/issueModel.js";
 import User from "../models/userModel.js";
 
 // Create a new repository and save it to the database
-async function createRepository (req, res)  {
+async function createRepository(req, res) {
   const { name, owner, content, description, visibility, issues } = req.body;
   try {
     if (!name) {
@@ -36,7 +36,7 @@ async function createRepository (req, res)  {
     console.error(error.message);
     res.status(500).json({ message: "Something went wrong" });
   }
-};
+}
 
 // Get all repositories from the database and return them as a JSON response
 async function getAllRepositories(req, res) {
@@ -72,7 +72,7 @@ async function fetchRepositoryById(req, res) {
 }
 
 // Get a repository by its name and return it as a JSON response if it exists in the database or a 404 response if it does not exist
-async function fetchRepositoryByName (req, res) {
+async function fetchRepositoryByName(req, res) {
   const { name } = req.params;
   try {
     const repository = await Repository.findOne({ name })
@@ -86,7 +86,7 @@ async function fetchRepositoryByName (req, res) {
     console.error(error.message);
     res.status(500).json({ message: "Something went wrong" });
   }
-};
+}
 
 // Get all repositories for the current user and return them as a JSON response if they exist in the database or a 404 response if they do not exist
 async function fetchRepositorsForCurrentUser(req, res) {
@@ -101,7 +101,7 @@ async function fetchRepositorsForCurrentUser(req, res) {
     if (!repositories) {
       res.status(404).json({ message: "Repositories not found" });
     }
-    res.status(200).json(repositories);
+    res.status(200).json({ message: "Repositories found!", repositories });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Something went wrong" });
@@ -161,7 +161,7 @@ async function toggleRepositoryVisibilityById(req, res) {
 }
 
 // Delete a repository by its ID and return a success message as a JSON response if it exists in the database or a 404 response if it does not exist
-async function deleteRepositoryById (req, res){
+async function deleteRepositoryById(req, res) {
   const { id } = req.params;
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -180,6 +180,39 @@ async function deleteRepositoryById (req, res){
     console.error(error.message);
     res.status(500).json({ message: "Something went wrong" });
   }
+}
+
+async function toggleStarRepository (req, res) {
+  try {
+    const { repoId } = req.params;
+    const { userId } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const repo = await Repository.findById(repoId);
+    if (!repo) {
+      return res.status(404).json({ message: "Repository not found" });
+    }
+
+    const alreadyStarred = user.starRepos.includes(repoId);
+
+    if (alreadyStarred) {
+      // Agar already starred hai, to remove karenge
+      user.starRepos = user.starRepos.filter(id => id.toString() !== repoId);
+    } else {
+      // Nahi hai to add karenge
+      user.starRepos.push(repoId);
+    }
+
+    await user.save();
+    res.json({ message: alreadyStarred ? "Repository unstarred" : "Repository starred", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 export {
@@ -191,4 +224,5 @@ export {
   updateRepositoryById,
   toggleRepositoryVisibilityById,
   deleteRepositoryById,
+  toggleStarRepository,
 };

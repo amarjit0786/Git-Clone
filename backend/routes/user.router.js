@@ -10,7 +10,7 @@ import {
 } from '../controllers/userController.js';
 
 userRouter.get('/allUsers', getAllUsers);
-userRouter.post('/signUp', signUp);
+userRouter.post('/signup', signUp);
 userRouter.post('/login', login);
 userRouter.get('/userProfile/:id', getUserProfile);
 userRouter.put('/updateUserProfile/:id', updateUserProfile);

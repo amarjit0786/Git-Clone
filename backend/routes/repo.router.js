@@ -8,7 +8,8 @@ import {
     fetchRepositorsForCurrentUser,
     updateRepositoryById,
     toggleRepositoryVisibilityById,
-    deleteRepositoryById
+    deleteRepositoryById,
+    toggleStarRepository
 } from '../controllers/repoController.js';
 
 
@@ -23,5 +24,6 @@ repoRouter.get('/user/:userId', fetchRepositorsForCurrentUser);
 repoRouter.put('/update/:id', updateRepositoryById);
 repoRouter.put('/toggle/:id', toggleRepositoryVisibilityById);
 repoRouter.delete('/delete/:id', deleteRepositoryById);
+repoRouter.put('/star/:repoId',toggleStarRepository);
 
 export default repoRouter;

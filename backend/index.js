@@ -69,7 +69,7 @@ function startServer() {
   const app = express();
   const port = process.env.PORT || 3000;
 
-  app.use(cors({ origin: "*", methods: "GET,POST" }));
+  // app.use(cors({ origin: "*", methods: "GET,POST" }));
   app.use(bodyParser.json());
   app.use(express.json());
   app.use(bodyParser.urlencoded({ extended: true }));
@@ -86,7 +86,7 @@ function startServer() {
       console.error("Error connecting to MongoDB", err);
     });
 
-    
+    app.use(cors({ origin: "*" }));
   app.use( mainRouter); // Add this line  
 
   let user = "test";
