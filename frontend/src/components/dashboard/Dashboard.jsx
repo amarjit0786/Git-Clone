@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./dashboard.css";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import Navbar from "../Navbar";
 
 export default function Dashboard() {
   const [repositories, setRepositories] = useState([]);
@@ -99,76 +100,79 @@ export default function Dashboard() {
   };
 
   return (
-    <section id="dashboard">
-      <aside>
-        {/* all repos */}
-        <h2>Suggested Repositories</h2>
-        {suggestedRepositories.map((repo) => {
-          return (
-            <div key={repo._id}>
-              <h4
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                {repo.name}
-                <span onClick={() => toggleFavorite(repo._id)}>
-                  {favoriteRepos[repo._id] ? (
-                    <FavoriteIcon color="error" />
-                  ) : (
-                    <FavoriteBorderIcon />
-                  )}
-                </span>
-              </h4>
-              <hr />
-              <p>{repo.description}</p>
-            </div>
-          );
-        })}
-      </aside>
-      <main>
-        <h3>
-          <u> {userName}</u> Repositories
-        </h3>
-        <div id="search">
-          <input
-            type="text"
-            value={searchQuery}
-            placeholder="Search here.."
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-        {searchResults.map((repo) => {
-          return (
-            <div key={repo._id}>
-              <h4>{repo.name}</h4>
-              <hr />
+    <>
+    <Navbar />
+      <section id="dashboard">
+        <aside>
+          {/* all repos */}
+          <h2>Suggested Repositories</h2>
+          {suggestedRepositories.map((repo) => {
+            return (
+              <div key={repo._id}>
+                <h4
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  {repo.name}
+                  <span onClick={() => toggleFavorite(repo._id)}>
+                    {favoriteRepos[repo._id] ? (
+                      <FavoriteIcon color="error" />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </span>
+                </h4>
+                <hr />
+                <p>{repo.description}</p>
+              </div>
+            );
+          })}
+        </aside>
+        <main>
+          <h3>
+            <u> {userName}</u> Repositories
+          </h3>
+          <div id="search">
+            <input
+              type="text"
+              value={searchQuery}
+              placeholder="Search here.."
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          {searchResults.map((repo) => {
+            return (
+              <div key={repo._id}>
+                <h4>{repo.name}</h4>
+                <hr />
 
-              <h4>{repo.description}</h4>
-            </div>
-          );
-        })}
-      </main>
+                <h4>{repo.description}</h4>
+              </div>
+            );
+          })}
+        </main>
 
-      <aside>
-        <h3>Upcoming Events</h3>
-        <ul>
-          <li>
-            <p>Tech Conference -Dec 15</p>
-          </li>
-          <li>
-            <p>Tech Conference -Dec 15</p>
-          </li>
-          <li>
-            <p>Tech Conference -Dec 15</p>
-          </li>
-          <li>
-            <p>Tech Conference -Dec 15</p>
-          </li>
-        </ul>
-      </aside>
-    </section>
+        <aside>
+          <h3>Upcoming Events</h3>
+          <ul>
+            <li>
+              <p>Tech Conference -Dec 15</p>
+            </li>
+            <li>
+              <p>Tech Conference -Dec 15</p>
+            </li>
+            <li>
+              <p>Tech Conference -Dec 15</p>
+            </li>
+            <li>
+              <p>Tech Conference -Dec 15</p>
+            </li>
+          </ul>
+        </aside>
+      </section>
+      </>
   );
 }
