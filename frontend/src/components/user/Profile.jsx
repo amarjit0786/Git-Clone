@@ -5,6 +5,7 @@ import "./profile.css";
 import Navbar from "../Navbar";
 import { UnderlineNav } from "@primer/react";
 import { BookIcon, RepoIcon } from "@primer/octicons-react";
+import HeatMapProfile from "./HeatMap";
 import { useAuth } from "../../authContext";
 
 const Profile = () => {
@@ -96,6 +97,7 @@ const Profile = () => {
         </div>
 
         <div className="heat-map-section">
+        <HeatMapProfile />
         </div>
       </div>
     </>
